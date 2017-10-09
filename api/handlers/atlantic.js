@@ -41,6 +41,31 @@ module.exports.issuesList = {
   
 };
 
+module.exports.customerAuthCheck = {
+
+  handler: function (request, reply) {
+
+    let sql = `select from ITD.authentication_view; email = ? and  Password = ?;`;
+
+
+    connection.query(sql, [request.payload.email, request.payload.Password], function(err, rows, fields) {
+
+      //Error Response
+      if (err) throw err;
+
+      //Invalid Response
+      if(rows.length == 0)
+      {
+        return reply({"status":"Invalid"});
+      }
+
+      //Valid Login
+      return reply({"status":"valid"});
+
+    });
+  }
+};
+
 module.exports.customerUpdate = {
   
   handler: function (request, reply) {
@@ -85,7 +110,7 @@ module.exports.customerUpdate = {
             POTracking = ?,
             creditCard = ?,
             allowPO = ?
-        where RowID = ?`
+        where RowID = ?`;
 
       paramArray = [
         request.payload.Customer, 

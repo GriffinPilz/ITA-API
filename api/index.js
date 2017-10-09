@@ -4,11 +4,15 @@ const atlantic = require('./handlers/atlantic');
 exports.register = (plugin, options, next) => {
 
   plugin.route([
+    //GET
     { method: 'GET', path: '/', config: Home.hello },
     { method: 'GET', path: '/restricted', config: Home.restricted },
     { method: 'GET', path: '/{path*}', config: Home.notFound },
     { method: 'GET', path: '/atlantic', config: atlantic.dbHello },
-    { method: 'GET', path: '/atlantic/issues', config: atlantic.issuesList }
+    { method: 'GET', path: '/atlantic/issues', config: atlantic.issuesList },
+
+    //POST
+    { method: 'POST', path: '/atlantic/auth', config: atlantic.customerAuthCheck }
   ]);
 
   next();
