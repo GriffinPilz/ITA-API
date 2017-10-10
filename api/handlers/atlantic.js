@@ -45,7 +45,7 @@ module.exports.customerAuthCheck = {
 
   handler: function (request, reply) {
 
-    let sql = `select from ITD.authentication_view; email = ? and  Password = ?;`;
+    let sql = `select * from ITD.customer where email = ? and  Password = ? and Valid = 1;`;
 
 
     connection.query(sql, [request.payload.email, request.payload.Password], function(err, rows, fields) {
@@ -60,7 +60,7 @@ module.exports.customerAuthCheck = {
       }
 
       //Valid Login
-      return reply({"status":"valid"});
+      return reply(rows);
 
     });
   }
