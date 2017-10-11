@@ -75,8 +75,8 @@ module.exports.customerUpdate = {
 
     if(request.payload.RowID == 0 )
     {
-      sql = `insert into idp_custom_cart (Customer, CustomerURLParam, Image, WebURL, Active, password, BillToAddress,StdShipping, ExpShipping, M2MID, POTracking, creditCard, allowPO) 
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      sql = `insert into ITD.customer; (UserID, First_Name, Last_Name, email, School_or_Company, Phone_Number, Password, Admin) 
+        values (?,?,?,?,?,?,?,?)`;
 
       paramArray = [
         request.payload.Customer, 
