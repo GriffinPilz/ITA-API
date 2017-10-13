@@ -19,7 +19,7 @@ module.exports.issuesList = {
 
   handler: function (request, reply) {
 
-    var sql = "SELECT * FROM ITD.final_itd;";
+    var sql = "SELECT * FROM ITD.issues;";
 
     connection.query(sql, [], function(err, rows, fields) {
 
@@ -40,6 +40,56 @@ module.exports.issuesList = {
 
   
 };
+
+module.exports.customers = {
+
+  handler: function (request, reply) {
+
+    var sql = "SELECT `First_Name`, `Last_Name`, `email`, `School_or_Company`, `Phone_Number`, `Valid` FROM `ITD`.`customer`;";
+
+    connection.query(sql, [], function(err, rows, fields) {
+
+      //Error Response
+      if (err) throw err;
+
+      //Invalid Response
+      if(rows.length == 0)
+      {
+        return reply({"status":"Invalid"});
+      }
+
+      //Valid Login
+      return reply(rows);
+
+    });
+  } 
+};
+
+
+module.exports.atlanticEmployees = {
+
+  handler: function (request, reply) {
+
+    var sql = "SELECT * FROM ITD.Atlantic_Employees;";
+
+    connection.query(sql, [], function(err, rows, fields) {
+
+      //Error Response
+      if (err) throw err;
+
+      //Invalid Response
+      if(rows.length == 0)
+      {
+        return reply({"status":"Invalid"});
+      }
+
+      //Valid Login
+      return reply(rows);
+
+    });
+  } 
+};
+
 
 module.exports.customerAuthCheck = {
 
@@ -69,64 +119,123 @@ module.exports.customerAuthCheck = {
 module.exports.customerUpdate = {
   
   handler: function (request, reply) {
-  
+    console.log("customer update");
+    console.log(request.payload);
     let sql = "";
     let paramArray = [];
 
-    if(request.payload.RowID == 0 )
+    if(request.payload.UserID == 0 )
     {
-      sql = `insert into ITD.customer; (UserID, First_Name, Last_Name, email, School_or_Company, Phone_Number, Password, Admin) 
+      sql = `insert into ITD.customer (First_Name, Last_Name, email, School_or_Company, Phone_Number, Password, Admin, Valid) 
         values (?,?,?,?,?,?,?,?)`;
 
       paramArray = [
-        request.payload.Customer, 
-        request.payload.CustomerURLParam, 
-        request.payload.Image, 
-        request.payload.WebURL, 
-        request.payload.Active, 
-        request.payload.password, 
-        request.payload.BillToAddress, 
-        request.payload.StdShipping, 
-        request.payload.ExpShipping, 
-        request.payload.M2MID, 
-        request.payload.POTracking, 
-        request.payload.creditCard, 
-        request.payload.allowPO 
+        request.payload.First_Name, 
+        request.payload.Last_Name, 
+        request.payload.email, 
+        request.payload.School_or_Company, 
+        request.payload.Phone_Number, 
+        request.payload.Password, 
+        request.payload.Admin,
+        request.payload.Valid
       ];
     }
     else
     {
-      sql = `update idp_custom_cart
-        set Customer = ?,
-            CustomerURLParam = ?,
-            Image = ?,
-            WebURL = ?,
-            Active = ?,
-            password = ?,
-            BillToAddress = ?,
-            StdShipping = ?,
-            ExpShipping = ?,
-            M2MID = ?,
-            POTracking = ?,
-            creditCard = ?,
-            allowPO = ?
-        where RowID = ?`;
+      sql = `update ITD.customer
+        set First_Name = ?,
+            Last_Name = ?,
+            email = ?,
+            School_or_Company = ?,
+            Phone_Number = ?,
+            Password = ?,
+            Admin = ?,
+            Valid = ?,
+        where UserID = ?`;
+
+      paramArray = [ 
+        request.payload.First_Name, 
+        request.payload.Last_Name, 
+        request.payload.email, 
+        request.payload.School_or_Company, 
+        request.payload.Phone_Number, 
+        request.payload.Password, 
+        request.payload.Admin, 
+        request.payload.Valid,
+        request.payload.UserID
+      ];
+
+    }
+
+
+
+
+
+    
+      
+    connection.query(sql, paramArray, function(err, rows, fields) {
+  
+      //Error Response
+      if (err) throw err;
+  
+      //Invalid Response
+      if(rows.length == 0)
+      {
+        return reply({"status":"Invalid"});
+      }
+  
+      //Valid 
+      return reply({"status":"valid"});
+  
+    });
+  }
+};
+
+
+module.exports.ticketInsert = {
+  
+  handler: function (request, reply) {
+    console.log("ticket insert");
+    console.log(request.payload);
+    let sql = "";
+    let paramArray = [];
+
+    if(request.payload.Issue_Number == 0 )
+    {
+      sql = `insert into ITD.issues (Issue_Date, Issue_Due_Date, Issue_Description, Urgency, Status, Current_Assignment, Valid) 
+        values (?,?,?,?,?,?,?)`;
 
       paramArray = [
-        request.payload.Customer, 
-        request.payload.CustomerURLParam, 
-        request.payload.Image, 
-        request.payload.WebURL, 
-        request.payload.Active, 
-        request.payload.password, 
-        request.payload.BillToAddress, 
-        request.payload.StdShipping, 
-        request.payload.ExpShipping, 
-        request.payload.M2MID, 
-        request.payload.POTracking, 
-        request.payload.creditCard, 
-        request.payload.allowPO,
-        request.payload.RowID
+        request.payload.Issue_Date, 
+        request.payload.Issue_Due_Date, 
+        request.payload.Issue_Description, 
+        request.payload.Urgency, 
+        request.payload.Status, 
+        request.payload.Current_Assignment, 
+        request.payload.Valid
+      ];
+    }
+    else
+    {
+      sql = `update ITD.issues
+            set Issue_Date = ?,
+            Issue_Due_Date = ?,
+            Issue_Description = ?,
+            Urgency = ?,
+            Status = ?,
+            Current_Assignment = ?,
+            Valid = ?,
+        where Issue_Number = ?`;
+
+      paramArray = [ 
+        request.payload.Issue_Date, 
+        request.payload.Issue_Due_Date, 
+        request.payload.Issue_Description, 
+        request.payload.Urgency, 
+        request.payload.Status, 
+        request.payload.Current_Assignment,  
+        request.payload.Valid,
+        request.payload.Issue_Number
       ];
 
     }

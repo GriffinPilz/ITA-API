@@ -10,9 +10,13 @@ exports.register = (plugin, options, next) => {
     { method: 'GET', path: '/{path*}', config: Home.notFound },
     { method: 'GET', path: '/atlantic', config: atlantic.dbHello },
     { method: 'GET', path: '/atlantic/issues', config: atlantic.issuesList },
+    { method: 'GET', path: '/atlantic/customers', config: atlantic.customers },
+    { method: 'GET', path: '/atlantic/atlanticEmployees', config: atlantic.atlanticEmployees },
 
     //POST
-    { method: 'POST', path: '/atlantic/auth', config: atlantic.customerAuthCheck }
+    { method: 'POST', path: '/atlantic/auth', config: atlantic.customerAuthCheck },
+    { method: 'POST', path: '/atlantic/customerUpdate', config: atlantic.customerUpdate },
+    { method: 'POST', path: '/atlantic/ticketInsert', config: atlantic.ticketInsert }
   ]);
 
   next();
