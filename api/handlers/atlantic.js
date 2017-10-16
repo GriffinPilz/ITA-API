@@ -202,39 +202,42 @@ module.exports.ticketInsert = {
 
     if(request.payload.Issue_Number == 0 )
     {
-      sql = `insert into ITD.issues (Issue_Date, Issue_Due_Date, Issue_Description, Urgency, Status, Current_Assignment, Valid) 
-        values (?,?,?,?,?,?,?)`;
+      sql = `insert into ITD.issues (Issue_Date, User_ID, School_or_Company, Issue_Due_Date, Issue_Description, Urgency, Status, Current_Assignment) 
+        values (?,?,?,?,?,?,?,?)`;
 
       paramArray = [
-        request.payload.Issue_Date, 
+        request.payload.Issue_Date,
+        request.payload.User_ID,
+        request.payload.School_or_Company, 
         request.payload.Issue_Due_Date, 
         request.payload.Issue_Description, 
         request.payload.Urgency, 
         request.payload.Status, 
-        request.payload.Current_Assignment, 
-        request.payload.Valid
+        request.payload.Current_Assignment
       ];
     }
     else
     {
       sql = `update ITD.issues
-            set Issue_Date = ?,
+            set User_ID = ?,
+            School_or_Company = ?,
+            Issue_Date = ?,
             Issue_Due_Date = ?,
             Issue_Description = ?,
             Urgency = ?,
             Status = ?,
             Current_Assignment = ?,
-            Valid = ?,
         where Issue_Number = ?`;
 
       paramArray = [ 
+        request.payload.User_ID,
+        request.payload.School_or_Company,
         request.payload.Issue_Date, 
         request.payload.Issue_Due_Date, 
         request.payload.Issue_Description, 
         request.payload.Urgency, 
         request.payload.Status, 
         request.payload.Current_Assignment,  
-        request.payload.Valid,
         request.payload.Issue_Number
       ];
 
