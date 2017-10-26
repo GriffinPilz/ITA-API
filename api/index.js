@@ -16,9 +16,14 @@ exports.register = (plugin, options, next) => {
     //POST
     { method: 'POST', path: '/atlantic/auth', config: atlantic.customerAuthCheck },
     { method: 'POST', path: '/atlantic/customerUpdate', config: atlantic.customerUpdate },
-    { method: 'POST', path: '/atlantic/ticketInsert', config: atlantic.ticketInsert }
+    { method: 'POST', path: '/atlantic/ticketInsert', config: atlantic.ticketInsert },
+    { method: 'POST', path: '/atlantic/customerModalUpdate', config: atlantic.customerModalUpdate },
+    { method: 'POST', path: '/atlantic/workerModalUpdate', config: atlantic.workerModalUpdate },
+    { method: 'POST', path: '/atlantic/issueModalUpdate', config: atlantic.issueModalUpdate },
+    { method: 'POST', path: '/atlantic/issueHistoryModalUpdate', config: atlantic.issueHistoryModalUpdate },
+    { method: 'POST', path: '/atlantic/dayIssues', config: atlantic.dayIssues }
   ]);
-
+  
   next();
 };
 

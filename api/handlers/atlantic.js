@@ -19,7 +19,7 @@ module.exports.issuesList = {
 
   handler: function (request, reply) {
 
-    var sql = "SELECT * FROM ITD.issues;";
+    var sql = "SELECT `Issue_Number`,`User_ID`,`School_or_Company`,`Issue_Description`,DATE_FORMAT(Issue_Date, '%Y-%m-%e  %T') as 'Issue_Date', DATE_FORMAT(DATE_ADD(Issue_Date, INTERVAL Urgency DAY), '%Y-%m-%e  %T') as 'Issue_Due_Date',`Urgency`,`Status`,`Current_Assignment` FROM ITD.issues;";
 
     connection.query(sql, [], function(err, rows, fields) {
 
@@ -45,7 +45,7 @@ module.exports.customers = {
 
   handler: function (request, reply) {
 
-    var sql = "SELECT `First_Name`, `Last_Name`, `email`, `School_or_Company`, `Phone_Number`, `Valid` FROM `ITD`.`customer`;";
+    var sql = "SELECT * FROM ITD.customer where Valid = 1;";
 
     connection.query(sql, [], function(err, rows, fields) {
 
@@ -70,7 +70,7 @@ module.exports.atlanticEmployees = {
 
   handler: function (request, reply) {
 
-    var sql = "SELECT * FROM ITD.Atlantic_Employees;";
+    var sql = "select * from Atlantic_Employees where Valid = 1;";
 
     connection.query(sql, [], function(err, rows, fields) {
 
@@ -150,7 +150,7 @@ module.exports.customerUpdate = {
             Phone_Number = ?,
             Password = ?,
             Admin = ?,
-            Valid = ?,
+            Valid = ?
         where UserID = ?`;
 
       paramArray = [ 
@@ -226,7 +226,7 @@ module.exports.ticketInsert = {
             Issue_Description = ?,
             Urgency = ?,
             Status = ?,
-            Current_Assignment = ?,
+            Current_Assignment = ?
         where Issue_Number = ?`;
 
       paramArray = [ 
@@ -257,6 +257,279 @@ module.exports.ticketInsert = {
       //Valid 
       return reply({"status":"valid"});
   
+    });
+  }
+};
+
+
+
+module.exports.customerModalUpdate = {
+  
+  handler: function (request, reply) {
+    console.log("customer update");
+    console.log(request.payload);
+    let sql = "";
+    let paramArray = [];
+
+    if(request.payload.UserID == 0 )
+    {
+      sql = `insert into ITD.customer (First_Name, Last_Name, email, School_or_Company, Phone_Number, Valid) 
+        values (?,?,?,?,?,?)`;
+
+      paramArray = [
+        request.payload.First_Name, 
+        request.payload.Last_Name, 
+        request.payload.email, 
+        request.payload.School_or_Company, 
+        request.payload.Phone_Number, 
+        request.payload.Valid
+      ];
+    }
+    else
+    {
+      sql = `update ITD.customer
+        set First_Name = ?,
+            Last_Name = ?,
+            email = ?,
+            School_or_Company = ?,
+            Phone_Number = ?,
+            Valid = ?
+        where UserID = ?`;
+
+      paramArray = [ 
+        request.payload.First_Name, 
+        request.payload.Last_Name, 
+        request.payload.email, 
+        request.payload.School_or_Company, 
+        request.payload.Phone_Number,  
+        request.payload.Valid,
+        request.payload.UserID
+      ];
+
+    }
+    connection.query(sql, paramArray, function(err, rows, fields) {
+  
+      //Error Response
+      if (err) throw err;
+  
+      //Invalid Response
+      if(rows.length == 0)
+      {
+        return reply({"status":"Invalid"});
+      }
+  
+      //Valid 
+      return reply({"status":"valid"});
+  
+    });
+  }
+};
+
+module.exports.workerModalUpdate = {
+  
+  handler: function (request, reply) {
+    console.log("worker update");
+    console.log(request.payload);
+    let sql = "";
+    let paramArray = [];
+
+    if(request.payload.WorkerID == 0 )
+    {
+      sql = `insert into ITD.Atlantic_Employees (Name, Email,Phone, Valid) 
+        values (?,?,?,?)`;
+
+      paramArray = [
+        request.payload.Name, 
+        request.payload.email, 
+        request.payload.Phone_Number, 
+        request.payload.Valid
+      ];
+    }
+    else
+    {
+      sql = `update ITD.Atlantic_Employees
+        set Name = ?,
+            Email = ?,
+            Phone = ?,
+            Valid = ?
+        where WorkerID = ?`;
+
+      paramArray = [ 
+        request.payload.Name, 
+        request.payload.Email, 
+        request.payload.Phone,  
+        request.payload.Valid,
+        request.payload.WorkerID
+      ];
+
+    }
+    connection.query(sql, paramArray, function(err, rows, fields) {
+  
+      //Error Response
+      if (err) throw err;
+  
+      //Invalid Response
+      if(rows.length == 0)
+      {
+        return reply({"status":"Invalid"});
+      }
+  
+      //Valid 
+      return reply({"status":"valid"});
+  
+    });
+  }
+};
+
+module.exports.issueModalUpdate = {
+  
+  handler: function (request, reply) {
+    console.log("issue update");
+    console.log(request.payload);
+    let sql = "";
+    let paramArray = [];
+
+    if(request.payload.Issue_Number == 0 )
+    {
+      sql = `insert into ITD.issues (User_ID, School_or_Company,Issue_Description, Issue_Date, Issue_Due_Date, Urgency, Status, Current_Assignment) 
+        values (?,?,?,?,?,?,?,?)`;
+
+      paramArray = [
+        request.payload.User_ID, 
+        request.payload.School_or_Company, 
+        request.payload.Issue_Description, 
+        request.payload.Issue_Date,
+        request.payload.Issue_Due_Date,
+        request.payload.Urgency,
+        request.payload.Status,
+        request.payload.Current_Assignment
+      ];
+    }
+    else
+    {
+      sql = `update ITD.issues
+        set User_ID = ?,
+            School_or_Company = ?,
+            Issue_Description = ?,
+            Issue_Date = ?,
+            Issue_Due_Date = ?,
+            Urgency = ?,
+            Status = ?,
+            Current_Assignment = ?
+        where Issue_Number = ?`;
+
+      paramArray = [ 
+        request.payload.User_ID, 
+        request.payload.School_or_Company, 
+        request.payload.Issue_Description,  
+        request.payload.Issue_Date,
+        request.payload.Issue_Due_Date,
+        request.payload.Urgency,
+        request.payload.Status,
+        request.payload.Current_Assignment,
+        request.payload.Issue_Number
+      ];
+
+    }
+    connection.query(sql, paramArray, function(err, rows, fields) {
+  
+      //Error Response
+      if (err) throw err;
+  
+      //Invalid Response
+      if(rows.length == 0)
+      {
+        return reply({"status":"Invalid"});
+      }
+  
+      //Valid 
+      return reply({"status":"valid"});
+  
+    });
+  }
+};
+
+module.exports.issueHistoryModalUpdate = {
+  
+  handler: function (request, reply) {
+    console.log("issueHistory update");
+    console.log(request.payload);
+    let sql = "";
+    let paramArray = [];
+
+    if(request.payload.ID == 0 )
+    {
+      sql = `insert into ITD.issue_history (Issue_Number, Notes, Valid, WorkerID, Date_Added) 
+        values (?,?,?,?)`;
+
+      paramArray = [
+        request.payload.Issue_Number,
+        request.payload.Notes, 
+        request.payload.Valid, 
+        request.payload.WorkerID,
+        request.payload.Date_Added
+      ];
+    }
+    else
+    {
+      sql = `update ITD.issue_history
+        set Issue_Number = ?
+            Notes = ?,
+            Valid = ?,
+            WorkerID = ?,
+            Date_Added = ?
+        where ID = ?`;
+
+      paramArray = [ 
+        request.payload.Issue_Number,
+        request.payload.Notes, 
+        request.payload.Valid,
+        request.payload.WorkerID,
+        request.payload.Date_Added,
+        request.payload.ID
+      ];
+
+    }
+    connection.query(sql, paramArray, function(err, rows, fields) {
+  
+      //Error Response
+      if (err) throw err;
+  
+      //Invalid Response
+      if(rows.length == 0)
+      {
+        return reply({"status":"Invalid"});
+      }
+  
+      //Valid 
+      return reply({"status":"valid"});
+  
+    });
+  }
+};
+
+module.exports.dayIssues = {
+
+  handler: function (request, reply) {
+
+    let sql = `SELECT * FROM ITD.issues where Date_Format (Issue_Due_Date,  '%Y-%m-%d')  = Date_Format (CURDATE() + ?,  '%Y-%m-%d')`;
+
+    console.log(request.payload.day);
+    connection.query(sql, [request.payload.day], function(err, rows, fields) {
+
+      //Error Response
+      if (err) throw err;
+
+      //Invalid Response
+      if(rows.length == 0)
+      {
+        console.log(rows);
+        return reply(rows);
+      }
+
+      //Valid Login
+      return reply(rows);
+
     });
   }
 };
