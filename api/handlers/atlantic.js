@@ -15,6 +15,31 @@ module.exports.dbHello = {
   }
 };
 
+module.exports.issuesHistoryget = {
+
+  handler: function (request, reply) {
+
+    var sql = "SELECT `Issue_Number`,`ID`,`Notes`,DATE_FORMAT(Date_Added, '%Y-%m-%e  %T') as 'Date_Added',`WorkerID`,`Valid` FROM ITD.issue_history where Valid = 1 and Issue_Number = ?;";
+
+    connection.query(sql, [request.payload.Issue_Number], function(err, rows, fields) {
+
+      //Error Response
+      if (err) throw err;
+
+      //Invalid Response
+      if(rows.length == 0)
+      {
+        return reply({"status":"Invalid"});
+      }
+
+      //Valid Login
+      return reply(rows);
+
+    });
+  }
+  
+};
+
 module.exports.issuesList = {
 
   handler: function (request, reply) {
@@ -66,11 +91,11 @@ module.exports.customers = {
 };
 
 
-module.exports.atlanticEmployees = {
+module.exports.employees = {
 
   handler: function (request, reply) {
 
-    var sql = "select * from Atlantic_Employees where Valid = 1;";
+    var sql = "select * from Employees where Valid = 1;";
 
     connection.query(sql, [], function(err, rows, fields) {
 
@@ -95,7 +120,7 @@ module.exports.customerAuthCheck = {
 
   handler: function (request, reply) {
 
-    let sql = `select * from ITD.customer where email = ? and  Password = ? and Valid = 1;`;
+    let sql = `select * from ITD.customer where email = ? and  Password = md5(concat('1!@2test', ?)) and Valid = 1;`;
 
 
     connection.query(sql, [request.payload.email, request.payload.Password], function(err, rows, fields) {
@@ -127,7 +152,7 @@ module.exports.customerUpdate = {
     if(request.payload.UserID == 0 )
     {
       sql = `insert into ITD.customer (First_Name, Last_Name, email, School_or_Company, Phone_Number, Password, Admin, Valid) 
-        values (?,?,?,?,?,?,?,?)`;
+      values (?,?,?,?,?,md5(concat('1!@2test', ?)),?,?);`;
 
       paramArray = [
         request.payload.First_Name, 
@@ -325,7 +350,7 @@ module.exports.customerModalUpdate = {
   }
 };
 
-module.exports.workerModalUpdate = {
+module.exports.employeeModalUpdate = {
   
   handler: function (request, reply) {
     console.log("worker update");
@@ -335,7 +360,7 @@ module.exports.workerModalUpdate = {
 
     if(request.payload.WorkerID == 0 )
     {
-      sql = `insert into ITD.Atlantic_Employees (Name, Email,Phone, Valid) 
+      sql = `insert into ITD.Employees (Name, Email,Phone, Valid) 
         values (?,?,?,?)`;
 
       paramArray = [
@@ -347,7 +372,7 @@ module.exports.workerModalUpdate = {
     }
     else
     {
-      sql = `update ITD.Atlantic_Employees
+      sql = `update ITD.Employees
         set Name = ?,
             Email = ?,
             Phone = ?,
@@ -384,8 +409,7 @@ module.exports.workerModalUpdate = {
 module.exports.issueModalUpdate = {
   
   handler: function (request, reply) {
-    console.log("issue update");
-    console.log(request.payload);
+
     let sql = "";
     let paramArray = [];
 
@@ -514,7 +538,7 @@ module.exports.dayIssues = {
 
     let sql = `SELECT * FROM ITD.issues where Date_Format (Issue_Due_Date,  '%Y-%m-%d')  = Date_Format (CURDATE() + ?,  '%Y-%m-%d')`;
 
-    console.log(request.payload.day);
+
     connection.query(sql, [request.payload.day], function(err, rows, fields) {
 
       //Error Response

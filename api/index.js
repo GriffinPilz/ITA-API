@@ -11,14 +11,15 @@ exports.register = (plugin, options, next) => {
     { method: 'GET', path: '/atlantic', config: atlantic.dbHello },
     { method: 'GET', path: '/atlantic/issues', config: atlantic.issuesList },
     { method: 'GET', path: '/atlantic/customers', config: atlantic.customers },
-    { method: 'GET', path: '/atlantic/atlanticEmployees', config: atlantic.atlanticEmployees },
+    { method: 'GET', path: '/atlantic/employees', config: atlantic.employees },
+    { method: 'POST', path: '/atlantic/issuesHistoryget', config: atlantic.issuesHistoryget },
 
     //POST
     { method: 'POST', path: '/atlantic/auth', config: atlantic.customerAuthCheck },
     { method: 'POST', path: '/atlantic/customerUpdate', config: atlantic.customerUpdate },
     { method: 'POST', path: '/atlantic/ticketInsert', config: atlantic.ticketInsert },
     { method: 'POST', path: '/atlantic/customerModalUpdate', config: atlantic.customerModalUpdate },
-    { method: 'POST', path: '/atlantic/workerModalUpdate', config: atlantic.workerModalUpdate },
+    { method: 'POST', path: '/atlantic/employeeModalUpdate', config: atlantic.employeeModalUpdate },
     { method: 'POST', path: '/atlantic/issueModalUpdate', config: atlantic.issueModalUpdate },
     { method: 'POST', path: '/atlantic/issueHistoryModalUpdate', config: atlantic.issueHistoryModalUpdate },
     { method: 'POST', path: '/atlantic/dayIssues', config: atlantic.dayIssues }
